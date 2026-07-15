@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>AI Hub — Central de Agentes de IA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<!-- ======================= TELA DE LOGIN / CADASTRO ======================= -->
+<div id="view-auth" class="auth-screen">
+  <div class="auth-bg" aria-hidden="true">
+    <svg class="auth-bg-svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+      <g id="auth-nodes"></g>
+    </svg>
+  </div>
+
+  <div class="auth-card">
+    <div class="brand">
+      <span class="brand-mark"><span class="brand-dot"></span></span>
+      <span class="brand-name">AI HUB</span>
+    </div>
+    <p class="auth-tagline">Um só painel para todos os seus agentes de IA.</p>
+
+    <div class="auth-tabs" role="tablist">
+      <button class="auth-tab is-active" data-tab="login" role="tab">Entrar</button>
+      <button class="auth-tab" data-tab="register" role="tab">Criar conta</button>
+    </div>
+
+    <form id="form-login" class="auth-form">
+      <label class="field">
+        <span>Usuário</span>
+        <input type="text" name="username" autocomplete="username" required minlength="3" maxlength="30">
+      </label>
+      <label class="field">
+        <span>Senha</span>
+        <input type="password" name="password" autocomplete="current-password" required minlength="6">
+      </label>
+      <button type="submit" class="btn btn-cta btn-block">Entrar</button>
+    </form>
+
+    <form id="form-register" class="auth-form hidden">
+      <label class="field">
+        <span>Escolha um usuário</span>
+        <input type="text" name="username" autocomplete="username" required minlength="3" maxlength="30">
+      </label>
+      <label class="field">
+        <span>Crie uma senha</span>
+        <input type="password" name="password" autocomplete="new-password" required minlength="6">
+      </label>
+      <p class="field-hint">Mínimo de 6 caracteres. O primeiro usuário criado vira administrador.</p>
+      <button type="submit" class="btn btn-cta btn-block">Criar conta</button>
+    </form>
+
+    <p id="auth-error" class="auth-error hidden"></p>
+  </div>
+</div>
+
+<!-- ======================= APLICAÇÃO PRINCIPAL ======================= -->
+<div id="view-app" class="app-shell hidden">
+
+  <button id="sidebar-toggle" class="sidebar-toggle" aria-label="Abrir menu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+  </button>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="brand brand-sidebar">
+      <span class="brand-mark small"><span class="brand-dot"></span></span>
+      <span class="brand-name">AI HUB</span>
+    </div>
+
+    <div class="sidebar-section">
+      <h4 class="sidebar-label">Agentes</h4>
+      <div id="agent-list" class="agent-list"></div>
+    </div>
+
+    <div class="sidebar-section">
+      <h4 class="sidebar-label">Colaboração</h4>
+      <button id="open-bridge" class="agent-item bridge-item">
+        <span class="agent-item-icon bridge-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+        </span>
+        <span class="agent-item-name">Ponte multi-IA</span>
+      </button>
+    </div>
+
+    <div id="admin-section" class="sidebar-section hidden">
+      <h4 class="sidebar-label">Administração</h4>
+      <button id="open-admin" class="agent-item">
+        <span class="agent-item-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        </span>
+        <span class="agent-item-name">Gerenciar agentes</span>
+      </button>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="user-chip">
+        <span class="user-avatar" id="user-avatar"></span>
+        <span class="user-name" id="user-name"></span>
+      </div>
+      <button id="logout-btn" class="icon-btn" title="Sair">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+      </button>
+    </div>
+  </aside>
+
+  <div id="sidebar-scrim" class="sidebar-scrim hidden"></div>
+
+  <main class="workspace">
+    <div id="columns" class="columns"></div>
+    <div id="empty-state" class="empty-state">
+      <p>Escolha um agente na barra lateral para começar.</p>
+    </div>
+  </main>
+</div>
+
+<!-- ======================= MODAL: ADMIN DE AGENTES ======================= -->
+<div id="admin-modal" class="modal-overlay hidden">
+  <div class="modal">
+    <header class="modal-header">
+      <h3>Gerenciar agentes</h3>
+      <button class="icon-btn" data-close-modal>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </header>
+    <div class="modal-body">
+      <div id="admin-agent-table" class="admin-agent-table"></div>
+
+      <h4 class="modal-subtitle">Adicionar novo agente</h4>
+      <form id="form-new-agent" class="agent-form">
+        <div class="form-row">
+          <label class="field"><span>Identificador (slug)</span><input name="slug" placeholder="ex: gpt-x" required pattern="[a-z0-9][a-z0-9\-_]{1,30}"></label>
+          <label class="field"><span>Nome de exibição</span><input name="display_name" placeholder="ex: GPT-X" required></label>
+        </div>
+        <div class="form-row">
+          <label class="field"><span>Modelo</span><input name="model" placeholder="ex: provedor/modelo" required></label>
+          <label class="field"><span>URL base (opcional)</span><input name="base_url" placeholder="https://integrate.api.nvidia.com/v1/chat/completions"></label>
+        </div>
+        <label class="field"><span>Chave de API</span><input name="api_key" type="password" placeholder="nvapi-..." required></label>
+        <div class="form-row">
+          <label class="field"><span>Temperatura</span><input name="temperature" type="number" step="0.1" min="0" max="2" value="1.0"></label>
+          <label class="field"><span>Top P</span><input name="top_p" type="number" step="0.05" min="0" max="1" value="1.0"></label>
+          <label class="field"><span>Max tokens</span><input name="max_tokens" type="number" step="256" min="256" value="8192"></label>
+        </div>
+        <div class="form-row">
+          <label class="field checkbox-field"><input name="supports_vision" type="checkbox"><span>Aceita imagens</span></label>
+          <label class="field"><span>Cor</span><input name="color" type="color" value="#8B8FA3"></label>
+        </div>
+        <p class="field-hint">Novos agentes ficam disponíveis para todos os usuários imediatamente, sem reiniciar o servidor.</p>
+        <button type="submit" class="btn btn-cta">Adicionar agente</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= TEMPLATES ======================= -->
+<template id="tpl-column">
+  <section class="column" data-slug="">
+    <header class="column-header">
+      <span class="status-dot"></span>
+      <div class="column-title">
+        <h3 class="column-name"></h3>
+        <span class="column-model"></span>
+      </div>
+      <div class="column-actions">
+        <button class="icon-btn" data-action="history" title="Histórico">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        </button>
+        <button class="icon-btn" data-action="new" title="Nova conversa">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        </button>
+        <button class="icon-btn" data-action="close" title="Fechar coluna">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+    </header>
+    <div class="history-dropdown hidden"></div>
+    <div class="messages"></div>
+    <form class="composer">
+      <div class="image-preview hidden"></div>
+      <div class="composer-row">
+        <button type="button" class="icon-btn attach-btn hidden" data-action="attach" title="Anexar imagem">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+        </button>
+        <input type="file" class="file-input hidden" accept="image/png,image/jpeg,image/webp">
+        <textarea class="composer-input" placeholder="Digite sua mensagem..." rows="1"></textarea>
+        <button type="submit" class="send-btn" title="Enviar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+        </button>
+      </div>
+    </form>
+  </section>
+</template>
+
+<template id="tpl-bridge-column">
+  <section class="column column-bridge" data-slug="__bridge__">
+    <header class="column-header">
+      <span class="status-dot bridge-dot"></span>
+      <div class="column-title">
+        <h3 class="column-name">Ponte multi-IA</h3>
+        <span class="column-model">vários agentes conversando entre si</span>
+      </div>
+      <div class="column-actions">
+        <button class="icon-btn" data-action="history" title="Histórico">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        </button>
+        <button class="icon-btn" data-action="new" title="Nova ponte">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        </button>
+        <button class="icon-btn" data-action="close" title="Fechar coluna">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+    </header>
+    <div class="history-dropdown hidden"></div>
+
+    <div class="bridge-setup">
+      <label class="sidebar-label">Participantes</label>
+      <div class="bridge-agent-picker"></div>
+      <label class="sidebar-label">Tópico</label>
+      <textarea class="bridge-topic" rows="2" placeholder="Sobre o que os agentes devem conversar?"></textarea>
+      <label class="sidebar-label">Rodadas: <span class="bridge-rounds-value">2</span></label>
+      <input type="range" class="bridge-rounds" min="1" max="5" value="2">
+      <button type="button" class="btn btn-cta btn-block bridge-start-btn">Iniciar ponte</button>
+    </div>
+
+    <div class="bridge-patchbay hidden"></div>
+    <div class="messages bridge-transcript"></div>
+  </section>
+</template>
+
+<script src="/static/js/api.js"></script>
+<script src="/static/js/auth.js"></script>
+<script src="/static/js/app.js"></script>
+</body>
+</html>
